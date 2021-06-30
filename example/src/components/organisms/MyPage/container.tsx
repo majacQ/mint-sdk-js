@@ -128,7 +128,7 @@ export const Container: React.VFC = () => {
       handleHideShippingInfo={hideShippinngInfo}
       showShippingInfo={showShippingInfo}
       userWalletAddress={walletInfo?.address}
-      withdrawingItemId={withdrawingItemId}
+      withdrawingItemId={withdrawingItemId ?? undefined}
       ownTokens={ownTokens}
       showShippingInfoModal={typeof selectShippingInfoItemId !== 'undefined'}
       shippingInfo={

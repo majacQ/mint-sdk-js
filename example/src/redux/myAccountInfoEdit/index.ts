@@ -6,14 +6,14 @@ import { getSdk } from '../../sdk'
 export type MyAccountInfoEditState = {
   data: {
     accountInfo: AccountInfo
-    uploadedImgId: string | undefined
-    uploadedSignedUrl: string | undefined
+    uploadedImgId: string | null
+    uploadedSignedUrl: string | null
   }
   meta: {
     loading: boolean
     imgUploading: boolean
     submitting: boolean
-    error: string | undefined
+    error: string | null
   }
 }
 
@@ -28,11 +28,11 @@ export const initialMyAccountInfoEditState: MyAccountInfoEditState = {
       instagramAccountName: '',
       homepageUrl: '',
     },
-    uploadedImgId: undefined,
-    uploadedSignedUrl: undefined,
+    uploadedImgId: null,
+    uploadedSignedUrl: null,
   },
   meta: {
-    error: undefined,
+    error: null,
     imgUploading: false,
     submitting: false,
     loading: false,
@@ -48,7 +48,7 @@ export const getAccountInfoActionCreator = createAsyncThunk<
   }
 >('app/myAccountInfo/get', async (arg, thunkApi) => {
   try {
-    const data = await getSdk()?.getAccountInfo({
+    const data = await getSdk().getAccountInfo({
       walletAddress: arg.walletAddress,
     })
     return data
@@ -70,7 +70,7 @@ export const uploadAvatarActionCreator = createAsyncThunk<
   }
 >('app/myAccountInfo/uploadAvatar', async (arg, thunkApi) => {
   try {
-    return await getSdk()?.uploadAccountInfoAvatar({
+    return await getSdk().uploadAccountInfoAvatar({
       file: arg.file,
     })
   } catch (err) {
@@ -106,7 +106,7 @@ export const updateAccountInfoActionCreator = createAsyncThunk<
     thunkApi
   ) => {
     try {
-      await getSdk()?.updateAccountInfo(arg)
+      await getSdk().updateAccountInfo(arg)
       thunkApi.dispatch(push('/me'))
     } catch (err) {
       console.error(err)
@@ -128,7 +128,7 @@ export const myAccountInfoEditSlice = createSlice({
       getAccountInfoActionCreator.rejected,
       (state, { payload }) => {
         state.meta.loading = false
-        state.meta.error = payload
+        state.meta.error = payload ?? null
       }
     )
     builder.addCase(
@@ -154,7 +154,7 @@ export const myAccountInfoEditSlice = createSlice({
       uploadAvatarActionCreator.rejected,
       (state, { payload }) => {
         state.meta.imgUploading = false
-        state.meta.error = payload
+        state.meta.error = payload ?? null
       }
     )
     builder.addCase(
@@ -175,7 +175,7 @@ export const myAccountInfoEditSlice = createSlice({
       updateAccountInfoActionCreator.rejected,
       (state, { payload }) => {
         state.meta.submitting = false
-        state.meta.error = payload
+        state.meta.error = payload ?? null
       }
     )
     builder.addCase(updateAccountInfoActionCreator.fulfilled, (state) => {

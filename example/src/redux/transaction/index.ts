@@ -6,16 +6,16 @@ import { getSdk } from '../../sdk'
 export type TransactionState = {
   meta: {
     bidding: boolean
-    error: string | undefined
-    withdrawingItemId: string | undefined
+    error: string | null
+    withdrawingItemId: string | null
   }
 }
 
 export const initialTransactionState: TransactionState = {
   meta: {
     bidding: false,
-    withdrawingItemId: undefined,
-    error: undefined,
+    withdrawingItemId: null,
+    error: null,
   },
 }
 
@@ -29,7 +29,7 @@ export const bidActionCreator = createAsyncThunk<
   }
 >('app/transaction/bid', async ({ itemId, bidPrice }, thunkApi) => {
   try {
-    const tx = await getSdk()!.sendTxBid(itemId, bidPrice)
+    const tx = await getSdk().sendTxBid(itemId, bidPrice)
     await tx.wait()
     // すぐ遷移するとキャッシュの関係で反映されない
     await sleep(6000)
@@ -49,7 +49,7 @@ export const withDrawItemActionCreator = createAsyncThunk<
   }
 >('app/myItems/withdraw', async ({ itemId }, thunkApi) => {
   try {
-    const tx = await getSdk()!.sendTxMakeSuccessfulBid(itemId, 'unknown')
+    const tx = await getSdk().sendTxMakeSuccessfulBid(itemId, 'unknown')
     await tx.wait()
     // すぐ遷移するとキャッシュの関係で反映されない
     await sleep(6000)
@@ -70,25 +70,25 @@ export const transactionSlice = createSlice({
       state.meta.bidding = false
     })
     builder.addCase(bidActionCreator.pending, (state) => {
-      state.meta.error = undefined
+      state.meta.error = null
       state.meta.bidding = true
     })
     builder.addCase(bidActionCreator.rejected, (state, { payload }) => {
-      state.meta.error = payload
+      state.meta.error = payload ?? null
       state.meta.bidding = false
     })
     builder.addCase(withDrawItemActionCreator.fulfilled, (state) => {
-      state.meta.withdrawingItemId = undefined
+      state.meta.withdrawingItemId = null
     })
     builder.addCase(withDrawItemActionCreator.pending, (state, action) => {
       state.meta.withdrawingItemId = action.meta.arg.itemId
-      state.meta.error = undefined
+      state.meta.error = null
     })
     builder.addCase(
       withDrawItemActionCreator.rejected,
       (state, { payload }) => {
-        state.meta.withdrawingItemId = undefined
-        state.meta.error = payload
+        state.meta.withdrawingItemId = null
+        state.meta.error = payload ?? null
       }
     )
   },

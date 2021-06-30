@@ -8,7 +8,7 @@ export type MyAccountInfoState = {
   }
   meta: {
     loading: boolean
-    error: string | undefined
+    error: string | null
   }
 }
 
@@ -25,7 +25,7 @@ export const initialMyAccountInfoState: MyAccountInfoState = {
     },
   },
   meta: {
-    error: undefined,
+    error: null,
     loading: false,
   },
 }
@@ -39,7 +39,7 @@ export const getAccountInfoActionCreator = createAsyncThunk<
   }
 >('app/myAccountInfo/get', async (arg, thunkApi) => {
   try {
-    const data = await getSdk()?.getAccountInfo({
+    const data = await getSdk().getAccountInfo({
       walletAddress: arg.walletAddress,
     })
     return data
@@ -62,7 +62,7 @@ export const myAccountInfoSlice = createSlice({
       getAccountInfoActionCreator.rejected,
       (state, { payload }) => {
         state.meta.loading = false
-        state.meta.error = payload
+        state.meta.error = payload ?? null
       }
     )
 

@@ -22,7 +22,7 @@ export const Container: React.VFC = () => {
     dispatch(connectWalletActionCreator() as any)
   }, [])
 
-  const isLogin = typeof walletInfo !== 'undefined'
+  const isLogin = walletInfo !== null
   useEffect(() => {
     if (typeof walletInfo?.address === 'undefined') {
       return

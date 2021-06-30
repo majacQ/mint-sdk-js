@@ -13,7 +13,7 @@ export const Container: React.VFC = () => {
 
   return (
     <Presentation
-      isOpen={typeof dialogContent !== 'undefined'}
+      isOpen={dialogContent !== null}
       title={dialogContent?.title ?? ''}
       content={dialogContent?.content ?? ''}
       confirmText={dialogContent?.confirmText}

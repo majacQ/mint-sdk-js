@@ -7,7 +7,7 @@ export type HistoryState = {
   meta: {
     waitingHistoryAction: boolean
     initialized: boolean
-    error: string | undefined
+    error: string | null
   }
 }
 
@@ -15,7 +15,7 @@ export const initialHistoryState: HistoryState = {
   data: [],
   meta: {
     waitingHistoryAction: false,
-    error: undefined,
+    error: null,
     initialized: false,
   },
 }
@@ -25,7 +25,7 @@ export const initialHistoryActionCreator = createAsyncThunk(
   'app/history/init',
   async (itemId: string) => {
     if (getSdk()) {
-      const history = await getSdk()?.getItemLogs(itemId)
+      const history = await getSdk().getItemLogs(itemId)
       return history
     } else {
       return []
@@ -41,7 +41,7 @@ export const getHistoryActionCreator = createAsyncThunk<
   }
 >('app/history/get', async (itemId, thunkApi) => {
   try {
-    const history = await getSdk()!.getItemLogs(itemId)
+    const history = await getSdk().getItemLogs(itemId)
     return history
   } catch (err) {
     return thunkApi.rejectWithValue(
@@ -73,7 +73,7 @@ export const historySlice = createSlice({
       state.meta.waitingHistoryAction = false
     })
     builder.addCase(getHistoryActionCreator.rejected, (state, { payload }) => {
-      state.meta.error = payload
+      state.meta.error = payload ?? null
       state.meta.waitingHistoryAction = false
     })
   },

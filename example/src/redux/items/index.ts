@@ -12,7 +12,7 @@ export type ItemsState = {
   meta: {
     waitingItemAction: boolean
     initialized: boolean
-    error: string | undefined
+    error: string | null
   }
 }
 
@@ -23,7 +23,7 @@ export const initialItemsState: ItemsState = {
   },
   meta: {
     waitingItemAction: false,
-    error: undefined,
+    error: null,
     initialized: false,
   },
 }
@@ -39,14 +39,14 @@ export const getItemsActionCreator = createAsyncThunk<
 >('app/items/get', async (_, thunkApi) => {
   try {
     const [live, ended] = await Promise.all([
-      getSdk()?.getItems({
+      getSdk().getItems({
         onSale: true,
         perPage: 1000,
         networkId: [4, 80001],
         page: 1,
         sort: { sortBy: 'endAt', order: 'desc' },
       }),
-      getSdk()?.getItems({
+      getSdk().getItems({
         onSale: false,
         networkId: [4, 80001],
         perPage: 1000,
@@ -55,8 +55,8 @@ export const getItemsActionCreator = createAsyncThunk<
       }),
     ])
     return {
-      live: live ?? [],
-      ended: ended ?? [],
+      live: live,
+      ended: ended,
     }
   } catch (err) {
     console.error(err)
@@ -82,7 +82,7 @@ export const itemsSlice = createSlice({
       state.meta.waitingItemAction = false
     })
     builder.addCase(getItemsActionCreator.rejected, (state, { payload }) => {
-      state.meta.error = payload
+      state.meta.error = payload ?? null
       state.meta.waitingItemAction = false
     })
   },

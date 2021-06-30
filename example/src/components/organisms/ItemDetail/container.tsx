@@ -132,7 +132,7 @@ export const Container: React.VFC = () => {
   return (
     <Presentation
       loading={waitingItem}
-      item={item}
+      item={item ?? undefined}
       aboutPhysicalModalIsOpen={aboutPhysicalModalIsOpen}
       handleClosePhysicalModal={closePhysicalModal}
       handleOpenPhysicalModal={openPhysicalModal}

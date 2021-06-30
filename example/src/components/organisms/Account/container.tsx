@@ -24,13 +24,12 @@ export const Container: React.VFC = () => {
     (state) => state.app.accountInfo.data.accountInfoMap[walletAddress]
   )
   useEffect(() => {
-    if (typeof accountInfo === 'undefined') {
+    if (accountInfo === null) {
       dispatch(getAccountInfoActionCreator({ walletAddress }) as any)
     }
 
     dispatch(getTokensActionCreator({ walletAddress }) as any)
   }, [walletAddress, accountInfo])
-  console.log(tokensLoading)
   return (
     <Presentation
       waitingOwnTokens={

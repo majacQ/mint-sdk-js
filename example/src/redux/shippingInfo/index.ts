@@ -9,7 +9,7 @@ export type ShippingInfoState = {
     shippingInfo: Record<string, ItemShippingInfo>
   }
   meta: {
-    error: string | undefined
+    error: string | null
     loading: boolean
     loadingShippingInfo: boolean
   }
@@ -22,7 +22,7 @@ export const initialShippingInfoState: ShippingInfoState = {
   meta: {
     loading: false,
     loadingShippingInfo: false,
-    error: undefined,
+    error: null,
   },
 }
 
@@ -43,7 +43,7 @@ export const getShippingInfoActionCreator = createAsyncThunk<
     if (state.app.shippingInfo.data.shippingInfo[itemId]) {
       return state.app.shippingInfo.data.shippingInfo[itemId]
     }
-    const data = await getSdk()!.getItemShippingInfo({ itemId })
+    const data = await getSdk().getItemShippingInfo({ itemId })
     return data.data
   } catch (err) {
     return thunkApi.rejectWithValue('失敗しました')
@@ -72,7 +72,7 @@ export const submitShippingInfoActionCreator = createAsyncThunk<
   }
 >('app/shippingInfo/submit', async ({ itemId, data }, thunkApi) => {
   try {
-    await getSdk()!.registerItemShippingInfo({
+    await getSdk().registerItemShippingInfo({
       itemId,
       shippingInfo: {
         ...data,
@@ -96,13 +96,13 @@ export const shippingInfoSlice = createSlice({
       state.meta.loading = false
     })
     builder.addCase(submitShippingInfoActionCreator.pending, (state) => {
-      state.meta.error = undefined
+      state.meta.error = null
       state.meta.loading = true
     })
     builder.addCase(
       submitShippingInfoActionCreator.rejected,
       (state, { payload }) => {
-        state.meta.error = payload
+        state.meta.error = payload ?? null
         state.meta.loading = false
       }
     )
@@ -114,13 +114,13 @@ export const shippingInfoSlice = createSlice({
       }
     })
     builder.addCase(getShippingInfoActionCreator.pending, (state) => {
-      state.meta.error = undefined
+      state.meta.error = null
       state.meta.loadingShippingInfo = true
     })
     builder.addCase(
       getShippingInfoActionCreator.rejected,
       (state, { payload }) => {
-        state.meta.error = payload
+        state.meta.error = payload ?? null
         state.meta.loadingShippingInfo = false
       }
     )

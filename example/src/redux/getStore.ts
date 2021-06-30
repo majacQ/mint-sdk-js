@@ -130,4 +130,7 @@ const getStore: MakeStore<StoreState> = (context: any) => {
   })
   return store
 }
-export const wrapper = createWrapper(getStore)
+export const wrapper = createWrapper(getStore, {
+  serializeState: (state) => JSON.stringify(state),
+  deserializeState: (state) => JSON.parse(state),
+})

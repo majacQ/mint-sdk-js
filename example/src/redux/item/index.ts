@@ -2,21 +2,21 @@ import { Item } from '@kyuzan/mint-sdk-js'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { getSdk } from '../../sdk'
 
-export type ItemDetail = Item | undefined
+export type ItemDetail = Item | null
 export type ItemState = {
   data: ItemDetail
   meta: {
     waitingItemAction: boolean
     initialized: boolean
-    error: string | undefined
+    error: string | null
   }
 }
 
 export const initialItemState: ItemState = {
-  data: undefined,
+  data: null,
   meta: {
     waitingItemAction: false,
-    error: undefined,
+    error: null,
     initialized: false,
   },
 }
@@ -25,12 +25,8 @@ export const initialItemState: ItemState = {
 export const initialItemActionCreator = createAsyncThunk(
   'app/item/init',
   async (itemId: string) => {
-    if (getSdk()) {
-      const item = await getSdk()?.getItemById(itemId)
-      return item
-    } else {
-      return undefined
-    }
+    const item = await getSdk().getItemById(itemId)
+    return item
   }
 )
 
@@ -42,7 +38,7 @@ export const getItemActionCreator = createAsyncThunk<
   }
 >('app/item/get', async (itemId, thunkApi) => {
   try {
-    const item = await getSdk()!.getItemById(itemId)
+    const item = await getSdk().getItemById(itemId)
     return item
   } catch (err) {
     return thunkApi.rejectWithValue(
@@ -61,11 +57,7 @@ export const itemSlice = createSlice({
     builder.addCase(
       initialItemActionCreator.fulfilled,
       (state, { payload }) => {
-        if (typeof payload === 'undefined') {
-          state.data = undefined
-        } else {
-          state.data = payload
-        }
+        state.data = payload
       }
     )
     builder.addCase(getItemActionCreator.pending, (state) => {
@@ -76,7 +68,7 @@ export const itemSlice = createSlice({
       state.meta.waitingItemAction = false
     })
     builder.addCase(getItemActionCreator.rejected, (state, { payload }) => {
-      state.meta.error = payload
+      state.meta.error = payload ?? null
       state.meta.waitingItemAction = false
     })
   },

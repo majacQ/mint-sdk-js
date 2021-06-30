@@ -11,7 +11,7 @@ export type MyItemsState = {
     bidedItemsLoading: boolean
     ownItemsLoading: boolean
 
-    error: string | undefined
+    error: string | null
   }
 }
 
@@ -23,7 +23,7 @@ export const initialMyItemsState: MyItemsState = {
   meta: {
     bidedItemsLoading: false,
     ownItemsLoading: false,
-    error: undefined,
+    error: null,
   },
 }
 
@@ -36,7 +36,7 @@ export const getBidedActionCreator = createAsyncThunk<
   }
 >('app/myItems/bidedItems/get', async ({ bidderAddress }, thunkApi) => {
   try {
-    const items = await getSdk()!.getItemsByBidderAddress(bidderAddress)
+    const items = await getSdk().getItemsByBidderAddress(bidderAddress)
     return items ?? []
   } catch (err) {
     return thunkApi.rejectWithValue('Itemを取得できませんでした')
@@ -51,7 +51,7 @@ export const getOwnItemsActionCreator = createAsyncThunk<
   }
 >('app/myItems/ownItems/get', async ({ walletAddress }, thunkApi) => {
   try {
-    const items = await getSdk()!.getTokensByAddress(walletAddress)
+    const items = await getSdk().getTokensByAddress(walletAddress)
     return items ?? []
   } catch (err) {
     return thunkApi.rejectWithValue('Itemを取得できませんでした')
@@ -70,11 +70,11 @@ export const myItemsSlice = createSlice({
     })
     builder.addCase(getBidedActionCreator.pending, (state) => {
       state.meta.bidedItemsLoading = true
-      state.meta.error = undefined
+      state.meta.error = null
     })
     builder.addCase(getBidedActionCreator.rejected, (state, { payload }) => {
       state.meta.bidedItemsLoading = false
-      state.meta.error = payload
+      state.meta.error = payload ?? null
     })
 
     builder.addCase(
@@ -86,11 +86,11 @@ export const myItemsSlice = createSlice({
     )
     builder.addCase(getOwnItemsActionCreator.pending, (state) => {
       state.meta.ownItemsLoading = true
-      state.meta.error = undefined
+      state.meta.error = null
     })
     builder.addCase(getOwnItemsActionCreator.rejected, (state, { payload }) => {
       state.meta.ownItemsLoading = false
-      state.meta.error = payload
+      state.meta.error = payload ?? null
     })
   },
 })

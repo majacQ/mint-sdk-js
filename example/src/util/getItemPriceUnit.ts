@@ -2,7 +2,7 @@ import { NetworkId } from '@kyuzan/mint-sdk-js'
 import { ItemDetail } from '../redux/item/index'
 
 export const getItemPriceUnit = (item: ItemDetail) => {
-  if (typeof item === 'undefined') return ''
+  if (item === null) return ''
   if (item?.networkId === 1 || item?.networkId === 4) {
     return 'ETH'
   }

@@ -12,24 +12,24 @@ type FormattedWalletInfo = {
 
 export type WalletState = {
   data: {
-    walletInfo: FormattedWalletInfo | undefined
+    walletInfo: FormattedWalletInfo | null
     connectedNetwork: NetworkId
   }
   meta: {
     waitingWalletAction: boolean
     initialized: boolean
-    error: string | undefined
+    error: string | null
   }
 }
 
 export const initialState: WalletState = {
   data: {
-    walletInfo: undefined,
+    walletInfo: null,
     connectedNetwork: 4,
   },
   meta: {
     waitingWalletAction: false,
-    error: undefined,
+    error: null,
     initialized: false,
   },
 }
@@ -39,9 +39,9 @@ export const initialState: WalletState = {
 export const initialWalletActionCreator = createAsyncThunk(
   'app/wallet/init',
   async () => {
-    if (await getSdk()!.isWalletConnect()) {
-      const walletInfo = await getSdk()!.getWalletInfo()
-      const connectingNetworkId = await getSdk()!.getConnectedNetworkId()
+    if (await getSdk().isWalletConnect()) {
+      const walletInfo = await getSdk().getWalletInfo()
+      const connectingNetworkId = await getSdk().getConnectedNetworkId()
       return {
         balance: MintSDK.formatEther(walletInfo.balance),
         currencyUnit: walletInfo.unit,
@@ -49,7 +49,7 @@ export const initialWalletActionCreator = createAsyncThunk(
         connectingNetworkId,
       }
     } else {
-      return undefined
+      return null
     }
   }
 )
@@ -62,8 +62,8 @@ export const connectWalletActionCreator = createAsyncThunk<
   }
 >('app/wallet/connect', async (_, thunkApi) => {
   try {
-    await getSdk()!.connectWallet()
-    const walletInfo = await getSdk()!.getWalletInfo()
+    await getSdk().connectWallet()
+    const walletInfo = await getSdk().getWalletInfo()
     return {
       balance: MintSDK.formatEther(walletInfo.balance),
       currencyUnit: walletInfo.unit,
@@ -85,7 +85,7 @@ export const walletSlice = createSlice({
       { payload }: PayloadAction<FormattedWalletInfo | undefined>
     ) => {
       if (typeof payload === 'undefined') {
-        state.data.walletInfo = undefined
+        state.data.walletInfo = null
       } else {
         state.data.walletInfo = {
           balance: payload.balance,
@@ -100,8 +100,8 @@ export const walletSlice = createSlice({
       initialWalletActionCreator.fulfilled,
       (state, { payload }) => {
         state.meta.initialized = true
-        if (typeof payload === 'undefined') {
-          state.data.walletInfo = undefined
+        if (payload === null) {
+          state.data.walletInfo = null
         } else {
           state.data.walletInfo = {
             balance: payload.balance,
@@ -129,7 +129,7 @@ export const walletSlice = createSlice({
     builder.addCase(
       connectWalletActionCreator.rejected,
       (state, { payload }) => {
-        state.meta.error = payload
+        state.meta.error = payload ?? null
         state.meta.waitingWalletAction = false
       }
     )

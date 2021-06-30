@@ -8,7 +8,7 @@ export type AccountTokesState = {
   }
   meta: {
     loading: Record<string, boolean>
-    error: string | undefined
+    error: string | null
   }
 }
 
@@ -18,7 +18,7 @@ export const initialAccountTokensState: AccountTokesState = {
   },
   meta: {
     loading: {},
-    error: undefined,
+    error: null,
   },
 }
 
@@ -31,7 +31,7 @@ export const getTokensActionCreator = createAsyncThunk<
   }
 >('app/accountTokens/get', async ({ walletAddress }, thunkApi) => {
   try {
-    const tokens = await getSdk()!.getTokensByAddress(walletAddress)
+    const tokens = await getSdk().getTokensByAddress(walletAddress)
     return { tokens, walletAddress }
   } catch (err) {
     return thunkApi.rejectWithValue('Tokenを取得できませんでした')
@@ -50,13 +50,13 @@ export const accountTokensSlice = createSlice({
     })
     builder.addCase(getTokensActionCreator.pending, (state, action) => {
       state.meta.loading[action.meta.arg.walletAddress] = true
-      state.meta.error = undefined
+      state.meta.error = null
     })
     builder.addCase(
       getTokensActionCreator.rejected,
       (state, { meta, payload }) => {
         state.meta.loading[meta.arg.walletAddress] = false
-        state.meta.error = payload
+        state.meta.error = payload ?? null
       }
     )
   },

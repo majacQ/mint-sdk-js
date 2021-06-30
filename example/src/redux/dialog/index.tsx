@@ -2,20 +2,18 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 export type DialogState = {
   data: {
-    content:
-      | undefined
-      | {
-          confirmText?: string
-          title: string
-          content: React.ReactNode
-        }
+    content: null | {
+      confirmText?: string
+      title: string
+      content: React.ReactNode
+    }
   }
   //   meta: {}
 }
 
 export const initialDialogState: DialogState = {
   data: {
-    content: undefined,
+    content: null,
   },
 }
 
@@ -33,7 +31,7 @@ export const dialogSlice = createSlice({
       state.data.content = payload
     },
     hideDialog: (state) => {
-      state.data.content = undefined
+      state.data.content = null
     },
   },
 })

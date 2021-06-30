@@ -1,29 +1,43 @@
 import styled from '@emotion/styled'
-import React, { useCallback, useEffect } from 'react'
+import React from 'react'
 import { EndedAuctionList } from '../components/organisms/AuctionList/ended'
 import { LiveAuctionList } from '../components/organisms/AuctionList/active'
 import { LoadingList } from '../components/organisms/AuctionList/loading'
-import { useAppDispatch, useAppSelector } from '../redux/getStore'
+import { useAppSelector, wrapper } from '../redux/getStore'
 import { getItemsActionCreator } from '../redux/items'
 import { color } from '../style'
 import { NextPage, GetServerSideProps, InferGetServerSidePropsType } from 'next'
 import CommonMeta from '../components/atoms/CommonMeta'
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const host = context.req.headers.host
-  const baseUrl = `http://${host}`
-  const currentPath = context.req.url
-  return {
-    props: {
-      baseUrl,
-      currentPath,
-    },
-  }
-}
+// TODO:
+// 開発環境も対応する
+// rinkeby.hooo.nft.nftと
+// 他データもstoreSetting的なreduxで管理する
+
+export const getServerSideProps: GetServerSideProps =
+  wrapper.getServerSideProps(async (context) => {
+    const host = context.req.headers.host
+    const baseUrl = `http://${host}`
+    const currentPath = context.req.url
+    if (typeof host === 'undefined') {
+      return { notFound: true }
+    }
+    // const splitedHosts = host.split('.')
+    // if (splitedHosts[0] === 'testnet') {
+    // } else {
+    // }
+    await context.store.dispatch(getItemsActionCreator() as any)
+    return {
+      props: {
+        baseUrl,
+        currentPath,
+      },
+    }
+  })
 
 const Page: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> =
   ({ baseUrl, currentPath }) => {
-    const dispatch = useAppDispatch()
+    // const dispatch = useAppDispatch()
     const items = useAppSelector((state) => {
       return state.app.items.data
     })
@@ -31,13 +45,10 @@ const Page: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> =
     const waitingItems = useAppSelector((state) => {
       return state.app.items.meta.waitingItemAction
     })
-    const getItems = useCallback(() => {
-      dispatch(getItemsActionCreator() as any)
-    }, [])
 
-    useEffect(() => {
-      getItems()
-    }, [])
+    // useEffect(() => {
+    //   dispatch(getItemsActionCreator() as any)
+    // }, [])
     return (
       <Container>
         <CommonMeta baseUrl={baseUrl} currentPath={currentPath} />
