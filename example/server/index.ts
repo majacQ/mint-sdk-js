@@ -9,9 +9,9 @@ const dev = process.env.NODE_ENV !== 'production'
 const port = process.env.PORT || 3002
 const pathCertKey = path.join(
   __dirname,
-  './certs/_wildcard.mintnft.mint-key.pem'
+  '../certs/_wildcard.mintnft.mint-key.pem'
 )
-const pathCertCert = path.join(__dirname, './certs/_wildcard.mintnft.mint.pem')
+const pathCertCert = path.join(__dirname, '../certs/_wildcard.mintnft.mint.pem')
 
 async function main() {
   try {
