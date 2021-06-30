@@ -91,6 +91,7 @@ const reducer = (
     | undefined,
   action: AnyAction
 ) => {
+  // ref: https://github.com/kirill-konshin/next-redux-wrapper#server-and-client-state-separation
   if (action.type === HYDRATE) {
     const nextState = {
       ...state, // use previous state
@@ -100,6 +101,20 @@ const reducer = (
       // preserve router value on client side navigation
       nextState.app.router = state.router
     }
+    if (typeof window !== 'undefined' && state?.app.wallet) {
+      // preserve wallet state
+      nextState.app.wallet = state.app.wallet
+    }
+    if (typeof window !== 'undefined' && state?.app.accountInfo) {
+      // preserve accountInfo state
+      nextState.app.accountInfo = state.app.accountInfo
+    }
+    if (typeof window !== 'undefined' && state?.app.myAccountInfo) {
+      // preserve myAccountInfo state
+      nextState.app.myAccountInfo = state.app.myAccountInfo
+    }
+
+    // TODO: 他に残すもの
     return nextState
   } else {
     return rootReducer(state, action)
