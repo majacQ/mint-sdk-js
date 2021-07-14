@@ -6,6 +6,9 @@ import { Presentation } from './presentation'
 
 export const Container: React.VFC = () => {
   const dispatch = useAppDispatch()
+  const logoUrl = useAppSelector(
+    (state) => state.app.store.data.setting.logoUrl
+  )
   const initialized = useAppSelector((state) => {
     return state.app.wallet.meta.initialized
   })
@@ -33,6 +36,7 @@ export const Container: React.VFC = () => {
   }, [walletInfo?.address])
   return (
     <Presentation
+      logoUrl={logoUrl}
       accountAvatarImgUrl={accountInfo.avatarImgUrl}
       isLogin={isLogin}
       loading={!initialized}

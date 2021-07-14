@@ -1,5 +1,4 @@
 import styled from '@emotion/styled'
-import Image from 'next/image'
 import Link from 'next/link'
 import Skeleton from 'react-loading-skeleton'
 import React from 'react'
@@ -16,6 +15,7 @@ type Props = {
   accountAvatarImgUrl: string | undefined
   walletAddress: string | undefined
   walletBalance: string | undefined
+  logoUrl: string
 }
 
 export const Presentation: React.VFC<Props> = ({
@@ -26,6 +26,7 @@ export const Presentation: React.VFC<Props> = ({
   walletBalance,
   accountAvatarImgUrl,
   loading,
+  logoUrl,
 }) => {
   return (
     <HeaderContainer>
@@ -33,12 +34,7 @@ export const Presentation: React.VFC<Props> = ({
         <Left>
           <Link passHref href={'/'}>
             <Anchor>
-              <Image
-                src={'/images/logo.svg'}
-                width={89.53}
-                height={30}
-                layout={'fixed'}
-              />
+              <LogoImage src={logoUrl} />
             </Anchor>
           </Link>
         </Left>
@@ -109,6 +105,11 @@ const HeaderContainer = styled.nav`
     0px 2.01027px 3.57381px rgba(0, 0, 0, 0.0238443),
     0px 0.598509px 1.06402px rgba(0, 0, 0, 0.0161557);
   z-index: 1;
+`
+
+const LogoImage = styled.img`
+  width: auto;
+  height: 50px;
 `
 
 const HeaderInner = styled.div`

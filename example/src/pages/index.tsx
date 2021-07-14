@@ -8,24 +8,33 @@ import { getItemsActionCreator } from '../redux/items'
 import { color } from '../style'
 import { NextPage, GetServerSideProps, InferGetServerSidePropsType } from 'next'
 import CommonMeta from '../components/atoms/CommonMeta'
+import { storeSlice } from '../redux/store'
+import { initSdk } from '../sdk'
 
-// TODO:
 // 開発環境も対応する
 // rinkeby.hooo.nft.nftと
 // 他データもstoreSetting的なreduxで管理する
+// keyの取得
+// networkIdの指定
+// store情報
+// reduxのstoreには、すでにデータを取得した上でのデータを渡す。
+// それを差し込むのは、SSRの共通処理として行う。
+// StoreFrontとして起動するのか、デフォのMintとして起動するのかは起動フラグでわける
+// npm start or npm startStoreFront
+// customServerで、shopInfoは注入されるという形にすると良い
 
 export const getServerSideProps: GetServerSideProps =
   wrapper.getServerSideProps(async (context) => {
     const host = context.req.headers.host
     const baseUrl = `http://${host}`
     const currentPath = context.req.url
-    if (typeof host === 'undefined') {
-      return { notFound: true }
-    }
-    // const splitedHosts = host.split('.')
-    // if (splitedHosts[0] === 'testnet') {
-    // } else {
-    // }
+    const storeSetting = (context as any).req['MINT_STORE_SETTING']
+    initSdk({
+      accessKey: storeSetting.setting.sdkAccessToken,
+      fortmaticAccessKey: storeSetting.setting.fortmaticAccessKey,
+      networkIds: storeSetting.isTestNetNev ? [4, 80001] : [1, 137],
+    })
+    context.store.dispatch(storeSlice.actions.initStore(storeSetting))
     await context.store.dispatch(getItemsActionCreator() as any)
     return {
       props: {
@@ -37,7 +46,6 @@ export const getServerSideProps: GetServerSideProps =
 
 const Page: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> =
   ({ baseUrl, currentPath }) => {
-    // const dispatch = useAppDispatch()
     const items = useAppSelector((state) => {
       return state.app.items.data
     })
@@ -45,10 +53,6 @@ const Page: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> =
     const waitingItems = useAppSelector((state) => {
       return state.app.items.meta.waitingItemAction
     })
-
-    // useEffect(() => {
-    //   dispatch(getItemsActionCreator() as any)
-    // }, [])
     return (
       <Container>
         <CommonMeta baseUrl={baseUrl} currentPath={currentPath} />

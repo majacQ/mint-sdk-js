@@ -31,6 +31,7 @@ import { initialMyItemsState, myItemsSlice } from './myItems'
 import { myAccountInfoSlice, initialMyAccountInfoState } from './myAccountInfo'
 import { accountInfoSlice, initialAccountInfoState } from './accountInfo'
 import { dialogSlice, initialDialogState } from './dialog'
+import { initialStoreState, storeSlice } from './store'
 
 const rootReducer = combineReducers({
   router: routerReducer,
@@ -46,6 +47,7 @@ const rootReducer = combineReducers({
     myAccountInfoEdit: myAccountInfoEditSlice.reducer,
     accountInfo: accountInfoSlice.reducer,
     accountTokens: accountTokensSlice.reducer,
+    store: storeSlice.reducer,
   }),
   ui: combineReducers({
     dialog: dialogSlice.reducer,
@@ -66,6 +68,7 @@ const getInitialState = (asPath?: string) => {
       myAccountInfoEdit: initialMyAccountInfoEditState,
       accountInfo: initialAccountInfoState,
       accountTokens: initialAccountTokensState,
+      store: initialStoreState,
     },
     ui: {
       dialog: initialDialogState,
@@ -113,8 +116,14 @@ const reducer = (
       // preserve myAccountInfo state
       nextState.app.myAccountInfo = state.app.myAccountInfo
     }
-
-    // TODO: 他に残すもの
+    if (
+      typeof window !== 'undefined' &&
+      state?.app.store &&
+      state.app.store.data === null
+    ) {
+      // preserve myAccountInfo state
+      nextState.app.store = state.app.store
+    }
     return nextState
   } else {
     return rootReducer(state, action)

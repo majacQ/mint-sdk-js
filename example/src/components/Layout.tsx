@@ -3,7 +3,7 @@ import styled from '@emotion/styled'
 import { useAppDispatch, useAppSelector } from '../redux/getStore'
 import { initialWalletActionCreator, walletSlice } from '../redux/wallet'
 import { Header } from './organisms/Header'
-import { getSdk } from '../sdk'
+import { getSdk, initSdk } from '../sdk'
 import { MintSDK } from '@kyuzan/mint-sdk-js'
 import { Dialog } from './organisms/Dialog'
 
@@ -16,7 +16,13 @@ const Layout = ({ children }: Props) => {
   const walletInitialized = useAppSelector(
     (state) => state.app.wallet.meta.initialized
   )
+  const storeSetting = useAppSelector((state) => state.app.store.data)
   useEffect(() => {
+    initSdk({
+      accessKey: storeSetting.setting!.sdkAccessToken,
+      fortmaticAccessKey: storeSetting.setting!.fortmaticAccessKey,
+      networkIds: storeSetting.isTestNetEnv ? [4, 80001] : [1, 137],
+    })
     if (!walletInitialized) {
       dispatch(initialWalletActionCreator() as any)
       const sdk = getSdk()

@@ -4,6 +4,7 @@ import { Presentation } from './presentation'
 
 export const Basic: React.VFC = () => (
   <Presentation
+    logoUrl={'/images/logo.svg'}
     loading={false}
     isLogin={true}
     accountAvatarImgUrl={undefined}
@@ -16,6 +17,7 @@ export const Basic: React.VFC = () => (
 
 export const AvatarImg: React.VFC = () => (
   <Presentation
+    logoUrl={'/images/logo.svg'}
     loading={false}
     isLogin={true}
     accountAvatarImgUrl={'https://place-hold.it/350x350'}
@@ -28,6 +30,7 @@ export const AvatarImg: React.VFC = () => (
 
 export const Loading: React.VFC = () => (
   <Presentation
+    logoUrl={'/images/logo.svg'}
     loading={true}
     isLogin={false}
     accountAvatarImgUrl={undefined}
@@ -40,6 +43,7 @@ export const Loading: React.VFC = () => (
 
 export const NoLogin: React.VFC = () => (
   <Presentation
+    logoUrl={'/images/logo.svg'}
     loading={false}
     isLogin={false}
     accountAvatarImgUrl={undefined}
@@ -52,6 +56,7 @@ export const NoLogin: React.VFC = () => (
 
 export const ConnectingWallet: React.VFC = () => (
   <Presentation
+    logoUrl={'/images/logo.svg'}
     loading={false}
     isLogin={false}
     accountAvatarImgUrl={undefined}
