@@ -3,7 +3,7 @@
   "description": "MINT NFT Platform Client SDK",
   "version": "5.13.3",
   "dependencies": {
-    "@emotion/babel-plugin": "^11.3.0",
+    "@emotion/babel-plugin": "^11.7.2",
     "agentkeepalive": "^4.1.4",
     "axios": "^0.21.1",
     "eth-sig-util": "^3.0.1",
