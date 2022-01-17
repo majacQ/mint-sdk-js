@@ -7,7 +7,7 @@
     "agentkeepalive": "^4.1.4",
     "axios": "^0.21.1",
     "eth-sig-util": "^3.0.1",
-    "ethers": "^5.0.31",
+    "ethers": "^5.5.2",
     "fortmatic": "^2.2.1"
   },
   "devDependencies": {
