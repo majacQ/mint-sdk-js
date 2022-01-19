@@ -19,7 +19,7 @@
     "@emotion/styled": "^11.3.0",
     "@hookform/resolvers": "2.8.0",
     "@kyuzan/mint-sdk-js": "latest",
-    "@reduxjs/toolkit": "^1.5.1",
+    "@reduxjs/toolkit": "^1.7.1",
     "@tippyjs/react": "^4.2.5",
     "boring-avatars": "^1.5.5",
     "clipboard-copy": "^4.0.1",
